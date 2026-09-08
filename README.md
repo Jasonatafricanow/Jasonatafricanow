@@ -51,6 +51,7 @@ Agent host / interaction
 ## Selected Architecture Decisions
 
 - [Building Long-Lived AI Systems](ARCHITECTURE-JOURNEY.md)
+- [Independent portfolio review](PORTFOLIO-INDEPENDENT-REVIEW.md)
 - Memory is not understanding.
 - Retrieval is not authority.
 - LCE became a separate engine rather than another MR pipeline.
