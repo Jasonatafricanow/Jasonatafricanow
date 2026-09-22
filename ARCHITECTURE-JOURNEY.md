@@ -1,186 +1,374 @@
-# Building Long-Lived AI Systems
+# From Operational Software to Long-Lived AI Systems
 
-## From Memory Retrieval to Persistent Cognition
+## A portfolio development path
 
-The initial question was simple:
+This document explains the **conceptual development path** across the public repositories.
 
-> How can an AI agent remember a user across time?
+It is not a claim that every project was built in this exact sequence or that public commit timestamps reproduce the original development chronology. Several older systems were cleaned and published later.
 
-The observed problem was stronger:
-
-> Retrieving history does not guarantee continuity of understanding.
-
-That led to a different question:
-
-> How can previously formed understanding survive turns, restarts, and model
-> changes without making the runtime an open-ended reasoning engine?
-
-The resulting system decomposition is:
+The useful continuity is the sequence of problems that became visible:
 
 ```text
-Mind Runtime  -> runtime authority and continuity
-LCE           -> longitudinal structure and cognition compilation research
-MR Habitat    -> observable spatial projection
+business workflow
+  -> integration and recovery
+  -> model serving
+  -> model routing
+  -> current agent state
+  -> runtime authority
+  -> longitudinal understanding
+  -> perceptible presence
 ```
 
-The architecture was shaped by reasonable ideas that failed at the boundary,
-not by pretending the final shape was obvious from the beginning.
+Each layer made a more abstract systems question unavoidable.
 
-## Architecture Evolution
+## 1. Product systems: state matters before AI
 
-```mermaid
-flowchart TD
-    A[Memory continuity] --> B[Authority separation]
-    B --> C[Longitudinal dynamics]
-    C --> D[LCE as a separate engine]
-    D --> E[Persistent cognition question]
-    E --> F[Compiled Cognition research]
-    B --> G[Observation Window]
-    G --> H[Spatial presence question]
-    H --> I[MR Habitat]
-```
+The commerce projects are important because they show the engineering pattern before it became "AI architecture."
 
-## 1. Memory Was Not the Real Problem
+### TradingWEB
 
-The first useful model was:
+A storefront can be built as pages plus APIs. A business system cannot.
+
+Products, variants, inventory, customers, orders, payments, refunds, permissions, audit, and fulfillment all create state transitions that several clients need to share.
+
+The design therefore moved toward:
 
 ```text
-history -> retrieval -> variables -> prompt -> model
+many interfaces
+    |
+    v
+one business authority
 ```
 
-More provenance, filtering, and retrieval quality improve this loop, but the
-model still has to reconstruct the meaning of the past. That leaves repeated
-reasoning, model-dependent variance, and ambiguity between a retrieved
-candidate and an accepted state.
+The storefront, admin system, POS, and migration path can look different while still converging on the same order and inventory semantics.
 
-Mind Runtime therefore treats persistent cognition as runtime state with
-explicit identity, provenance, lifecycle, admission, persistence, and failure
-semantics. The goal is to continue from authorized state plus new evidence,
-not to reconstruct all history on every turn.
+### TradingWEB POS
 
-`UNKNOWN`, `PARTIAL`, `ROUGH`, and `REVISABLE` remain legitimate states. An
-uncertain state is safer than an invented authority.
+A physical store immediately makes reliability concrete.
 
-## 2. Memory, Feeling, Understanding, and Reasoning Are Different Faculties
+A request can fail after the cashier has taken payment. The network can disappear. The client can retry. A scanner can behave differently from a camera. A printer can be Bluetooth, TCP, or a system service.
 
-A large prompt containing memory summaries, affect summaries, and longitudinal
-summaries can look like cognition while remaining only prompt fusion. It also
-tempts the runtime to take over current-turn planning and response reasoning.
+That produces several durable lessons:
 
-The accepted boundary is:
+- retry needs idempotency;
+- offline work needs explicit pending / committed state;
+- hardware should sit behind adapters;
+- local state can be necessary without becoming business authority.
+
+`client_ref` is not merely a convenient identifier. It represents a state boundary: replay the intent without duplicating the effect.
+
+### ShopifyDataBridge
+
+Migration exposed another version of the same distinction.
+
+A CSV row can be syntactically parseable and still be unsafe or semantically invalid. Source data does not become target truth merely because a parser understood it.
+
+That leads to:
 
 ```text
-Memory -> what was experienced
-MR     -> what runtime state is authorized now
-C10    -> bounded affect change over time
-LCE    -> what structure may be learned across time
-Body   -> current-turn reasoning, tools, and expression
+source
+  -> parse
+  -> sanitize
+  -> validate
+  -> check references
+  -> admit
+  -> target state
 ```
 
-Models remain responsible for inference. MR exposes bounded reusable state; it
-does not become an Agent Core.
+This pattern later reappears in the AI systems under different names.
 
-## 3. LCE Became a Separate Engine
+## 2. LocalModelService: models became infrastructure
 
-Hot Start began as a product question, but semantic neighbourhoods, region
-formation, temporal controls, trajectory, and longitudinal structure quickly
-became a different class of problem.
+One of the earliest AI project lines began from a practical customer-service goal: run a useful model locally.
 
-Putting all of that inside MR would make experimental discovery look like
-current runtime authority. Keeping it as ad hoc scripts would make each
-experiment another unreviewable pipeline.
-
-LCE became an independent, optional, additive engine:
+At first the problem looks small:
 
 ```text
-LCE asks: What structure may exist across this history?
-MR asks:  What state is authorized to participate in cognition now?
+application -> Ollama
 ```
 
-MR-side binding exists, but LCE Core remains external and production
-activation is a separate decision.
+But a real application needs streaming, text and vision models, tools, business functions, configuration, several clients, and a stable interface.
 
-## 4. Hot Start Became a Lab Experiment
-
-A custom Hot Start harness was a reasonable first implementation. It also
-created the risk of duplicating the production pipeline: another corpus
-loader, another storage root, another model adapter, and another authority
-path for every research question.
-
-The correction was to make the lab reusable and run Hot Start as one
-experiment on it. Lab products must not mutate production Xiyue state. This
-keeps research flexible while keeping MR production conservative.
-
-## 5. Model Variance Changed the Definition of Success
-
-Changing a foundation model can change retrieval initiative, tool use, context
-interpretation, and response quality. That qualitative runtime observation did
-not imply that MR had failed. It clarified the responsibility boundary.
-
-Success is not making unlike models identical. It is reducing unnecessary
-reconstruction, preserving accepted state, narrowing free reinterpretation,
-and keeping identity/context boundaries stable.
+The important correction was to stop letting model details leak into the application.
 
 ```text
-Model -> inference capability
-MR    -> durable state, authority, and continuity
-LCE   -> longitudinal learned structure
+application
+    |
+    v
+stable service boundary
+    |
+    v
+replaceable inference backend
 ```
 
-No private dialogue or provider log is needed to make this distinction.
+OpenAI-compatible endpoints became useful not because OpenAI itself was the architectural center, but because compatibility reduces coupling.
 
-## 6. Retrieval Is Useful, but Retrieval Is Not Authority
+This was an early version of a principle that became much more important later:
 
-Similarity, recency, frequency, and clustering discover candidates. They do
-not create canonical state. A dangerous loop is:
+> Replaceable capability should not own business or runtime authority.
+
+## 3. AutoRoute Gateway: failure semantics became explicit
+
+Once there are several model providers and credentials, "call a model" becomes a routing problem.
+
+A naive gateway tends to collapse concepts:
 
 ```text
-retrieve -> interpret -> store -> retrieve again -> treat as evidence
+provider = model = credential = health
 ```
 
-The shared rule across MR and LCE is:
+That is operationally false.
 
-> Model output cannot authorize itself.
+One credential can be rate-limited while another is healthy. One model can support vision while another cannot. One provider can fail before response commit and another can safely take over.
 
-Evidence, candidate, interpretation, canonical state, and projection are
-different objects. Authority is explicit. Ambiguity fails closed.
+But streaming reveals a hard boundary.
 
-## 7. From Observation Window to Habitat
+Before the first client-visible chunk, fallback may be safe. After the client has consumed part of one generation, silently switching upstreams can create a response that never existed anywhere.
+
+So:
+
+```text
+pre-commit failure  -> retry / fallback may continue
+post-commit failure -> surface partial failure
+```
+
+The lesson is not "retry aggressively." It is:
+
+> Recovery is only valid while the system can still preserve the semantics of one operation.
+
+## 4. Statebar: language understanding was not state authority
+
+Agent memory introduced a subtler version of the same problem.
+
+Long-term memory is a poor place for temporary states such as:
+
+- just woke up;
+- feeling unwell;
+- tentative afternoon plan;
+- recently cancelled activity;
+- unresolved short-lived concern.
+
+Statebar began as a narrow current-state layer.
+
+The first implementation used rule-based extraction plus optional LLM extraction. That worked until a failure exposed the abstraction leak: language *mentioning* sleep could be admitted as actual sleeping state.
+
+Adding one more regex exception would repair the symptom. It would not repair the authority model.
+
+The design moved toward:
+
+```text
+text / interaction
+      |
+      v
+observation candidate
+      |
+      v
+semantic admission
+      |
+      v
+deterministic reconciliation
+      |
+      v
+canonical state
+```
+
+The critical lesson was:
+
+> Recognizing a statement is not the same as authorizing a state transition.
+
+That idea becomes one of the central invariants in Mind Runtime.
+
+## 5. Mind Runtime: memory became an authority problem
+
+The original long-lived-agent question can be phrased as:
+
+> How can an agent remember across time?
+
+A standard answer is:
+
+```text
+history -> retrieval -> prompt -> model
+```
+
+But retrieval quality alone does not answer:
+
+- which interpretation is current;
+- which state was superseded;
+- what survives restart;
+- which runtime identity owns it;
+- what a model is permitted to change;
+- whether retrieved content is evidence or accepted state.
+
+The stronger problem is therefore:
+
+> How can an agent continue from authorized state rather than reconstructing authority from historical fragments every turn?
+
+This changed the architecture.
+
+MR separates evidence, memory, state, binding identity, admission, persistence, policy, expression, telemetry, and observation.
+
+The recurring rules are:
+
+```text
+evidence != cognition
+retrieval != authority
+model output != self-authorizing state
+projection != source of truth
+```
+
+### Why fail-closed behavior matters
+
+Long-lived state compounds errors. A convenient guess that survives restart becomes more dangerous than a one-turn hallucination.
+
+MR therefore treats `UNKNOWN`, partial state, rejected admission, and unresolved binding as legitimate outcomes.
+
+The system is allowed not to know.
+
+### Why observation is separate
+
+Once state becomes durable, debugging requires causal visibility. But an inspection surface with write authority becomes another hidden mutation path.
+
+Observation Window remains read-only by design.
+
+## 6. LCE: longitudinal cognition had to leave MR
+
+As MR developed, another question emerged:
+
+> What changed across months of evidence, and what durable structure can be learned from that history?
+
+It was tempting to implement that directly inside the runtime.
+
+That would have been architecturally convenient and epistemically dangerous.
+
+Experimental clustering, embeddings, semantic trajectories, and model interpretation would sit beside canonical runtime state and could gradually acquire authority simply by proximity.
+
+The response was separation:
+
+```text
+LCE asks:
+"What structure is justified across this history?"
+
+MR asks:
+"What state is authorized to participate now?"
+```
+
+LCE became an independent research-engineering system.
+
+### The research route was shaped by failures
+
+Several plausible ideas failed:
+
+- raw text similarity produced giant mixed regions;
+- fixed time buckets produced bad semantic boundaries;
+- model-led trend discovery risked circular validation;
+- exclusive clustering lost legitimate multi-membership;
+- mathematically attractive structure often lacked useful semantics;
+- broad green test suites still allowed provenance and recovery errors.
+
+Each failure changed an abstraction.
+
+The research discipline became:
+
+```text
+hypothesis
+  -> bounded experiment
+  -> no-future / negative control where relevant
+  -> preserve the miss
+  -> classify the failure
+  -> change the smallest abstraction
+  -> encode the learned boundary as regression
+```
+
+This is more important to the portfolio than any one clustering algorithm.
+
+### Derived cognition must not become its own evidence
+
+The strongest invariant is recursive:
+
+A model interpretation, vector region, higher-order candidate, or accepted cognition revision can be useful. It cannot silently become factual evidence supporting itself later.
+
+Otherwise the system creates epistemic compound interest on its own mistakes.
+
+## 7. MR Habitat: architecture should permit disposable experiments
 
 Observation Window answered:
 
 > Can the runtime be inspected?
 
-It exposed state, logs, telemetry, binding, and causal trace. Habitat asks a
-product question one step later:
+Habitat asks:
 
-> Can a long-running agent's state become perceptible as presence rather than
-> only as data?
+> Can persistent state become perceptible as presence?
 
-Habitat is not a virtual-world platform, a cognition store, a primary chat
-surface, or a replacement for MR. It is a read-oriented spatial projection of
-authored/mock inputs.
+That question could expand into a virtual-world platform very quickly.
 
-```text
-Creation side: flexible
-Runtime side:  conservative
+The project deliberately stops earlier:
 
-World package -> validate -> consume -> render
-```
+- one environment;
+- one stylized character;
+- authored/mock events;
+- local ambient behavior;
+- no cognition ownership;
+- no primary chat surface.
 
-Habitat does not build worlds, own cognition, rewrite Memory, or invent
-authority.
+This is a different kind of architecture discipline.
 
-## The Frozen Boundaries
+Sometimes the right decision is not adding another authority boundary. It is refusing to turn an experiment into infrastructure before the product hypothesis survives.
 
-| Project | Owns | Does not own |
+Habitat is designed to be disposable without damaging MR.
+
+## The common design pattern
+
+The projects look different, but the same distinctions recur:
+
+| Domain | Candidate / temporary | Authority / committed |
 | --- | --- | --- |
-| MR | runtime identity, authority, state, admission, persistence, observation | open-ended current-turn reasoning or LCE internals |
-| LCE | longitudinal structure research and contract-first consolidation | MR raw memory, vectors, or current response reasoning |
-| Habitat | spatial projection and presence experiments | cognition authority, Memory, production writes, or primary chat |
+| Migration | parsed source row | admitted target data |
+| POS | queued local order | idempotently accepted server order |
+| LLM routing | available candidate | committed response stream |
+| Statebar | extracted observation | reconciled canonical state |
+| MR | retrieval / interpretation | authorized runtime state |
+| LCE | derived structure | accepted derived cognition, still not factual Memory |
+| Habitat | visual projection | no cognition authority at all |
 
-This is the contribution I want the public repositories to make visible: not
-the volume of generated code, but the ability to turn ambiguous product and
-research questions into testable boundaries, reject superficially workable
-abstractions, and keep the resulting systems honest about what they do not yet
-know.
+The vocabulary changes. The engineering question does not:
+
+> What is allowed to become true for the next layer?
+
+## Design philosophy
+
+### Build for the original problem
+
+More capability creates more ways to lose the boundary.
+
+A local service does not need to become a distributed scheduler. A state layer does not need to become an agent runtime. A runtime does not need to absorb research. A visualization does not need to become a world platform.
+
+### Keep uncertain things uncertain
+
+A system that says "unknown" at the correct boundary is often safer and more useful than one that produces a confident but recursive explanation.
+
+### Recovery semantics define architecture
+
+Restart, retry, offline operation, delayed events, partial streams, invalidation, and replay are not implementation details. They reveal what the state actually means.
+
+### Revalidate abstractions
+
+For model-centric systems, one question matters repeatedly:
+
+> If the model became dramatically more capable tomorrow, which parts of this component would still be required for correctness, recovery, authority, or auditability?
+
+Some mechanisms should disappear as capability improves.
+
+The boundaries that protect state and meaning usually should not.
+
+## What the portfolio is intended to demonstrate
+
+Not that every project is production-complete, and not that persistent cognition has been solved.
+
+The intended signal is narrower:
+
+- translating messy product failures into explicit system contracts;
+- separating probabilistic capability from deterministic authority;
+- designing for restart, retry, replay, and partial failure;
+- preserving negative research results;
+- changing abstractions when evidence contradicts them;
+- keeping scope small enough that a project can still say what it does **not** own.
