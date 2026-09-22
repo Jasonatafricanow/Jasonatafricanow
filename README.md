@@ -1,106 +1,141 @@
 # Jiasen Wang
 
-I build **AI-native systems and operational software** across three layers: long-lived agent runtime, LLM infrastructure, and full-stack product systems.
+I build **AI-native systems and operational software** by turning ambiguous product failures into explicit state, authority, recovery, and ownership boundaries.
 
-My projects usually start from a concrete failure mode — state gets lost across conversations, model calls become unreliable, offline checkout breaks, migrations corrupt data, or a system cannot explain why a piece of state is trusted. I turn those problems into explicit boundaries, deterministic contracts, recoverable state, and testable failure semantics.
+The public repositories span full-stack commerce, offline mobile systems, local / multi-provider LLM infrastructure, agent state, runtime architecture, longitudinal cognition research, and spatial presence experiments.
 
-The common thread is not a single framework or model. It is the attempt to make systems remain understandable when the surrounding capability becomes probabilistic, distributed, or long-lived.
+The useful way to read the portfolio is not as a list of frameworks. It is as a sequence of increasingly abstract system questions.
 
-## Selected Work
+## Portfolio map
 
-### Long-lived AI systems
+```text
+Operational systems
+  TradingWEB
+  ├─ TradingWEB POS
+  └─ ShopifyDataBridge
+          |
+          | business systems exposed reliability,
+          | state and integration boundaries
+          v
+LLM infrastructure
+  LocalModelService
+  └─ AutoRoute Gateway
+          |
+          | model access became an infrastructure problem
+          v
+Agent state
+  Statebar MCP
+          |
+          | "current state" exposed an authority problem
+          v
+Long-lived agent runtime
+  Mind Runtime
+  ├─ Observation Window
+  └─ MR Habitat
+          |
+          | longitudinal interpretation outgrew runtime authority
+          v
+Longitudinal cognition research
+  LCE
+```
 
-#### [Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)
+This is a **conceptual development path**, not a literal ordering of public commit timestamps. Several older projects were published later as cleaned baselines.
 
-A stateful runtime for long-lived AI agents. MR separates evidence, memory, runtime identity, canonical state, persistence, policy, telemetry, and observation so that model inference can continue from authorized state instead of reconstructing everything from history on every turn.
+## Selected systems
 
-Current work focuses on authority boundaries, restart-safe persistence, multi-binding isolation, bounded context compilation, causal tracing, and fail-closed admission.
+### Long-lived AI / cognition
 
-#### [LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)
+**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)**  
+A stateful runtime for long-lived agents. It separates evidence, memory, runtime identity, canonical state, persistence, policy, expression, telemetry, and observation so model inference can continue from authorized state rather than reconstructing everything from history.
 
-A standalone research-engineering project for longitudinal understanding across evidence over time.
+**[LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)**  
+A research-engineering system for longitudinal understanding. Its current architecture was shaped through failed hypotheses, no-future evaluation, negative controls, adversarial regressions, immutable revisions, and an explicit rule that derived cognition cannot become factual authority by itself.
 
-LCE treats similarity, vectors, clusters, higher-order structure, and model interpretation as derived evidence rather than truth. Its architecture was shaped through failed hypotheses, no-future evaluation, negative controls, adversarial audits, immutable revision history, and recovery testing.
+**[Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp)**  
+A lightweight current-state layer for agents. It maintains short-lived user state through evidence, semantic time, deterministic reconciliation, lifecycle rules, MCP / REST transports, and anti-self-pollution boundaries.
 
-#### [Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp)
-
-A lightweight current-state layer for AI agents, positioned between long-term memory and the active conversation.
-
-It maintains short-lived user state through explicit evidence, deterministic reconciliation, semantic expiration, provenance, MCP stdio / REST transports, and anti-self-pollution rules. Recent work extends it from text extraction toward an evidence-driven state engine.
-
-#### [MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat)
-
-A spatial presence experiment for Mind Runtime.
-
-Habitat projects agent state and activity into a lightweight 3D environment while remaining read-oriented and projection-only: it does not own memory, cognition, or runtime authority.
+**[MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat)**  
+A bounded spatial-presence experiment. It asks whether persistent agent state is more legible when projected into an environment, while keeping cognition ownership outside the visualization.
 
 ### LLM infrastructure
 
-#### [AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway)
+**[AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway)**  
+A capability-aware multi-provider / multi-credential LLM gateway. Key concerns are provider-vs-credential identity, request capability gating, error-aware fallback, and a streaming commit boundary that prevents unsafe provider replay after output reaches the client.
 
-A capability-aware, multi-provider, multi-credential LLM gateway with OpenAI-compatible APIs.
+**[LocalModelService / OpenClaw-CS](https://github.com/Jasonatafricanow/LocalModelService)**  
+A local-first AI service built around Ollama and FastAPI. It exposes OpenAI-compatible endpoints, streaming, vision-capable models, tool modules, and business adapters behind a replaceable service boundary.
 
-It separates provider identity from credentials, filters candidates by request capabilities, performs dynamic routing and fallback, and prevents unsafe provider replay after a streamed response has already been committed to the client.
+### Operational product systems
 
-#### [LocalModelService / OpenClaw-CS](https://github.com/Jasonatafricanow/LocalModelService)
+**[TradingWEB](https://github.com/Jasonatafricanow/TradingWEB)**  
+A full-stack commerce and operations system that centralizes product, customer, order, payment, admin, POS, and migration domain logic.
 
-A local AI service built around Ollama and FastAPI.
+**[TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS)**  
+An offline-first React Native / Expo POS client with idempotent resynchronization, hardware abstraction, shift / staff flows, local security boundaries, and explicit separation between pending local work and server-authoritative business state.
 
-It exposes OpenAI-compatible endpoints, streaming responses, vision-capable local models, tool extensions, and business adapters while keeping deployment lightweight and local-first.
+**[ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge)**  
+A Shopify-to-TradingWEB migration boundary that parses, sanitizes, validates, maps, and audits imported data before it is admitted into the target business system.
 
-### Product systems
+## How I develop systems
 
-#### [TradingWEB](https://github.com/Jasonatafricanow/TradingWEB)
+### 1. Start from the failure mode
 
-A full-stack commerce and cross-border trading platform built with Next.js, React, TypeScript, Drizzle, and MySQL.
+I prefer to begin with a concrete failure:
 
-The repository covers storefront flows, admin operations, product and order domains, payments, i18n, RBAC, audit logging, POS-facing APIs, and migration integration.
+- a retry can duplicate an order;
+- a model can reinforce its own inferred state;
+- a credential failure can poison an entire provider;
+- a migration can parse correctly and still corrupt references;
+- a longitudinal pattern can look meaningful only because later evidence leaked into the evaluation.
 
-#### [TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS)
+The architecture is then organized around preventing or exposing that failure.
 
-An offline-first React Native / Expo POS client connected to TradingWEB.
+### 2. Separate discovery from authority
 
-It includes cart and checkout flows, split payments, returns, inventory operations, staff / shift workflows, hardware abstraction for scanners and receipt printers, secure credential storage, local persistence, and idempotent resynchronization after network recovery.
-
-#### [ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge)
-
-A migration and validation bridge from Shopify exports into TradingWEB.
-
-It handles CSV parsing, sanitization, product / variant / customer / order validation, referential checks, import progress, and migration audit history.
-
-## Portfolio Map
+A recurring distinction across the portfolio is:
 
 ```text
-Operational products
-  ├─ TradingWEB
-  ├─ TradingWEB POS
-  └─ ShopifyDataBridge
-
-LLM infrastructure
-  ├─ LocalModelService
-  └─ AutoRoute Gateway
-
-Long-lived agent systems
-  ├─ Statebar MCP
-  ├─ Mind Runtime
-  │    └─ MR Habitat
-  └─ LCE
+candidate != accepted state
+retrieval != authority
+parsed input != admitted data
+local pending work != committed remote effect
+projection != cognition
 ```
 
-These are different systems, but they repeatedly return to the same engineering questions:
+Probabilistic or derived systems may propose. A narrower boundary decides what becomes authoritative.
 
-- What is the authoritative state?
-- What can be derived but must not become truth automatically?
-- What happens after restart, retry, partial failure, delayed evidence, or network loss?
-- Which layer owns a decision, and which layer should remain replaceable?
-- How much machinery is actually required to solve the original problem?
+### 3. Treat failure and recovery as part of the design
 
-## Working Stack
+Retries, restart recovery, delayed evidence, partial streams, offline queues, idempotency, migration batches, and invalidated cognition are not edge cases added after the happy path. They determine the state model.
 
-Python · TypeScript · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · Vitest · Playwright
+### 4. Preserve negative results
 
-## Engineering Philosophy
+In research-heavy work, a failed hypothesis is useful if it changes the abstraction. LCE in particular preserves giant-component failures, semantic-boundary failures, weak structural signals, recovery faults, and adversarial regressions as part of the reasoning record.
+
+### 5. Revalidate architecture when capability changes
+
+Some code exists only because current models are weak at a task. Other boundaries remain necessary even if models become dramatically stronger.
+
+I try to distinguish the two.
+
+A component can therefore be kept, demoted, replaced, or deleted when evidence shows the abstraction no longer matches the problem.
+
+## Engineering philosophy
 
 > Build for the original problem, not for the maximum available capability.
 
-Capability is not the same as usefulness. I prefer narrow contracts, explicit ownership, inspectable state, reproducible failure cases, and architectures that can survive replacement of the model or framework around them.
+Capability is not the same as usefulness. I prefer narrow contracts, explicit ownership, inspectable state, reproducible failure cases, and systems that can survive replacement of the model, provider, UI, or framework around them.
+
+## Reading guide
+
+- **[From Operational Software to Long-Lived AI Systems](ARCHITECTURE-JOURNEY.md)** — the development and abstraction path across the portfolio.
+- **[Independent portfolio review](PORTFOLIO-INDEPENDENT-REVIEW.md)** — an earlier independent review of the MR / LCE / Habitat subset; useful as a conservative baseline, but narrower than the current public portfolio.
+- Individual repository READMEs now use the same case-study structure: problem → development path → design decisions → architecture → verification → boundaries.
+
+## Working stack
+
+Python · TypeScript · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · mypy · Ruff · Vitest · Playwright
+
+## Publication note
+
+Several projects predate their current public Git repositories. Where relevant, repository READMEs explicitly mark cleaned publication baselines so public commit dates are not mistaken for the complete development history.
