@@ -1,128 +1,45 @@
 # Jiasen Wang
 
-I build **AI-native systems and operational software**, with a current research focus on long-lived AI systems around **continuity, authority, and longitudinal understanding rather than larger prompts**.
+I build software across commerce, AI infrastructure, and long-lived agent systems.
 
-My public work spans operational products, LLM infrastructure, agent state, runtime architecture, longitudinal cognition research, and bounded product experiments.
+Most of my recent work is around persistent agent state, restart/recovery behavior, and longitudinal processing. The projects below are intentionally different in scope; some are operational software, some are infrastructure, and some are research prototypes.
 
-## Portfolio map
+## Projects
 
-```text
-Operational systems
-  TradingWEB
-  ├─ TradingWEB POS
-  └─ ShopifyDataBridge
-          |
-          v
-LLM infrastructure
-  LocalModelService
-  └─ AutoRoute Gateway
-          |
-          v
-Agent state
-  Statebar MCP
-          |
-          v
-Long-lived agent runtime
-  Mind Runtime
-  ├─ Observation Window
-  └─ MR Habitat
-          |
-          v
-Longitudinal cognition research
-  LCE
-```
+### Long-lived agents
 
-This is a **conceptual development path**, not a literal ordering of public commit timestamps. Several older projects were published later as cleaned baselines.
+**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)** — Python runtime for persistent AI agents. It includes SQLite-backed facts/state/intents/checkpoints, explicit runtime bindings, restart recovery, bounded memory retrieval, telemetry, and a read-only Observation Window. Optional Qdrant/FastEmbed adapters sit behind the retrieval interface.
 
-## Current status
+**[LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)** — Python research system for building longitudinal structures from historical evidence. The current pipeline compiles semantic blocks, builds vector projections and local overlapping structures, creates revisable candidate interpretations, and exposes accepted revisions through a deterministic read API. The repository keeps failed experiments, temporal cutoffs, negative controls, invalidation, and recovery tests.
 
-| Project | Current stage | Public evidence boundary |
-| --- | --- | --- |
-| **TradingWEB / POS / ShopifyDataBridge** | Engineering projects | Runnable repositories with type/lint/test surfaces and explicit domain, offline, migration, and integration boundaries |
-| **LocalModelService** | Infrastructure project | Runnable local inference service with OpenAI-compatible API and modular tool/business seams |
-| **AutoRoute Gateway** | Infrastructure project | Capability-aware routing implementation with pytest-based routing/fallback verification |
-| **Statebar MCP** | Active engineering / Beta | MCP + REST state layer with deterministic reconciliation and regression-tested state semantics |
-| **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, strict static/runtime checks; live shadow validation remains incomplete |
-| **LCE V1** | Research engineering | Public verification gate, synthetic boundary experiments, negative controls, recovery tests, and replication surface; external empirical validation remains open |
-| **MR Habitat** | Product prototype | Runnable bounded 3D prototype; current inputs are authored/mock and real MR integration remains open |
+**[Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp)** — Small MCP/REST service for short-lived user state. Extracted observations are checked against evidence priority and semantic time before deterministic reconciliation updates SQLite state. A false-positive sleep bug is kept as a regression case: mentioning sleep must not by itself mark the user as sleeping.
 
-These labels describe the evidence currently present in the repositories. They are not claims of equivalent production maturity.
+**[MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat)** — React/Three.js prototype that renders agent activity and state in a small 3D environment. The current prototype is read-oriented and mock/authored-event driven; it does not write agent state back to MR.
 
-## Selected work
+### AI infrastructure
 
-### Long-lived AI systems
+**[AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway)** — OpenAI-compatible multi-provider gateway. Provider, credential, model capability, health, and quota are tracked separately. Requests are filtered by capability before scoring, and streaming fallback stops once output has been committed to the caller.
 
-**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)** — A stateful runtime for long-lived agents. It separates evidence, memory, runtime identity, canonical state, persistence, policy, expression, telemetry, and observation so inference can continue from authorized state rather than reconstructing authority from history.
+**[LocalModelService / OpenClaw-CS](https://github.com/Jasonatafricanow/LocalModelService)** — FastAPI/Ollama model service with OpenAI-compatible endpoints, SSE streaming, text/vision configuration, tools, and optional business adapters.
 
-**[LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)** — A research-engineering system for longitudinal understanding. Its architecture was shaped through failed hypotheses, no-future evaluation, negative controls, adversarial regressions, immutable revisions, and an explicit rule that derived cognition cannot become factual authority by itself.
+### Commerce and operations
 
-**[Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp)** — A lightweight current-state layer for agents using evidence, semantic time, deterministic reconciliation, lifecycle rules, and anti-self-pollution boundaries.
+**[TradingWEB](https://github.com/Jasonatafricanow/TradingWEB)** — Next.js/TypeScript commerce backend covering products, customers, orders, payments, admin/RBAC, audit, POS APIs, and Shopify migration. Payment webhooks are reconciled as asynchronous state changes; POS writes use stable client references for retry safety.
 
-**[MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat)** — A spatial-presence experiment that projects agent state into a lightweight environment without giving the visualization ownership of cognition.
+**[TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS)** — Expo/React Native offline-first POS. It keeps local pending work separate from server-accepted orders, resynchronizes with idempotent client references, and isolates scanner/printer implementations behind hardware adapters.
 
-### LLM infrastructure
+**[ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge)** — Shopify CSV migration tool for TradingWEB. It parses and sanitizes source files, validates products/customers/orders/inventory together, checks references, and only then submits batches to the TradingWEB import API.
 
-**[AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway)** — A capability-aware multi-provider / multi-credential LLM gateway with explicit credential state, fallback semantics, and a streaming commit boundary.
+## Development notes
 
-**[LocalModelService / OpenClaw-CS](https://github.com/Jasonatafricanow/LocalModelService)** — A local-first Ollama / FastAPI model service exposing OpenAI-compatible APIs, streaming, vision-capable models, tools, and business adapters behind a replaceable service boundary.
+The projects were built for different problems, but several implementation concerns recur: idempotent retries, restart recovery, explicit state transitions, and keeping derived/model-produced data separate from committed application state.
 
-### Operational systems
+A short project-by-project history is in **[Development Notes](ARCHITECTURE-JOURNEY.md)**.
 
-**[TradingWEB](https://github.com/Jasonatafricanow/TradingWEB)** — A full-stack commerce and operations system covering products, customers, orders, payments, administration, POS contracts, and migration integration.
-
-**[TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS)** — An offline-first React Native / Expo POS client with idempotent resynchronization, hardware abstraction, staff/shift workflows, and explicit local-vs-server state boundaries.
-
-**[ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge)** — A Shopify-to-TradingWEB migration boundary that parses, sanitizes, validates, maps, and audits data before target admission.
-
-## Verifiable outputs
-
-The portfolio is intended to be inspected rather than accepted from description alone.
-
-| Project | Where to verify |
-| --- | --- |
-| **Mind Runtime** | Repository tests, strict mypy/Ruff configuration, deterministic certification artifacts, restart/recovery validation, and explicit delivery-gate status |
-| **LCE V1** | `python scripts/verify.py`, public research experiments, retained negative results, recovery matrices, and the provider-agnostic replication surface |
-| **Statebar MCP** | Regression tests around evidence priority, delayed observations, assistant-message exclusion, semantic admission, and sleep/wake state transitions |
-| **AutoRoute Gateway** | pytest / pytest-asyncio routing tests around capability filtering, credential isolation, fallback, and streaming commit behavior |
-| **TradingWEB** | TypeScript checks, ESLint, Vitest, Playwright, i18n checks, and migration-reconciliation scripts |
-| **TradingWEB POS** | Type checking, Vitest/Jest suites, linting, native bundling, and Android build helpers |
-| **ShopifyDataBridge** | TypeScript validation, linting, Vitest, and explicit migration validation/admission paths |
-| **MR Habitat** | Local prototype, automated tests/build, verification record, and product-experiment notes |
-
-Each repository README states its own limitations and distinguishes implemented behavior from future work or unverified deployment claims.
-
-## Development and architecture journey
-
-The detailed reasoning is kept outside this landing page:
-
-**[From Operational Software to Long-Lived AI Systems](ARCHITECTURE-JOURNEY.md)** traces the path from commerce, offline recovery, migration, and model infrastructure into agent state, runtime authority, and longitudinal cognition.
-
-Across those projects, several distinctions recur:
-
-```text
-candidate != accepted state
-retrieval != authority
-parsed input != admitted data
-local pending work != committed remote effect
-projection != cognition
-```
-
-The vocabulary changes by domain. The underlying question is the same:
-
-> **What is allowed to become true for the next layer?**
-
-An earlier **[Independent Portfolio Review](PORTFOLIO-INDEPENDENT-REVIEW.md)** covers the MR / LCE / Habitat subset and remains as a conservative historical review.
-
-## Engineering philosophy
-
-> **Build for the original problem, not for the maximum available capability.**
-
-Capability is not the same as usefulness. Architecture should preserve the target function before expanding the feature surface.
-
-## Working stack
+## Stack
 
 Python · TypeScript · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · mypy · Ruff · Vitest · Playwright
 
 ## Publication note
 
-Several projects predate their current public Git repositories. Where relevant, repository READMEs mark cleaned publication baselines so public commit dates are not mistaken for the complete development history.
+Some older projects were published as cleaned repositories after substantial local development. Their public commit dates therefore do not represent the complete development timeline.
