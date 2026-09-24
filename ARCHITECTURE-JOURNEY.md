@@ -1,25 +1,41 @@
-# From Operational Software to Long-Lived AI Systems
+# Architecture Notes Across Two Project Lines
 
-## A portfolio development path
+## What is connected, and what is not
 
-This document explains the **conceptual development path** across the public repositories.
-
-It is not a claim that every project was built in this exact sequence or that public commit timestamps reproduce the original development chronology. Several older systems were cleaned and published later.
-
-The useful continuity is the sequence of problems that became visible:
+The public repositories come from two project lines:
 
 ```text
-business workflow
-  -> integration and recovery
-  -> model serving
-  -> model routing
-  -> current agent state
-  -> runtime authority
-  -> longitudinal understanding
-  -> perceptible presence
+Operational engineering                 AI / agent systems
+
+TradingWEB                               LocalModelService
+├─ TradingWEB POS                        └─ AutoRoute Gateway
+└─ ShopifyDataBridge                            |
+                                                v
+                                          Statebar MCP
+                                                |
+                                                v
+                                           Mind Runtime
+                                           ├─ MR Habitat
+                                           └─ LCE
 ```
 
-Each layer made a more abstract systems question unavoidable.
+This is **not** a claim that the operational repositories evolved into the AI repositories,
+that they share a package lineage, or that public commit timestamps reproduce the original
+development chronology. Several older systems were cleaned and published later.
+
+The reason to discuss them together is narrower: independent projects kept exposing the
+same class of systems question.
+
+```text
+What is temporary?
+What is committed?
+Who owns the authoritative state?
+When is retry still semantically legal?
+What may be derived without becoming source truth?
+```
+
+The sections below show where those questions appeared in each line. Similarity of design
+concerns should not be read as evidence of code reuse.
 
 ## 1. Product systems: state matters before AI
 
