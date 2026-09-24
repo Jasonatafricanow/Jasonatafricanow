@@ -76,7 +76,7 @@ These labels describe the evidence currently present in the repositories. They a
 
 ## Verifiable outputs
 
-The portfolio is intended to be inspected rather than accepted from description alone.
+The portfolio is intended to be inspected rather than accepted from description alone. Each project keeps its own implementation, verification surface, limitations, and current evidence boundary; reviewers should treat repository code, tests, CI, and current architecture records as primary evidence.
 
 | Project | Where to verify |
 | --- | --- |
@@ -111,7 +111,6 @@ The vocabulary changes by domain. The underlying question is the same:
 
 > **What is allowed to become true for the next layer?**
 
-An earlier **[Independent Portfolio Review](PORTFOLIO-INDEPENDENT-REVIEW.md)** covers the MR / LCE / Habitat subset and remains as a conservative historical review.
 
 ## Engineering philosophy
 

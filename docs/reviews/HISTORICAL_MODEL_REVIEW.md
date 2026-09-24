@@ -1,3 +1,10 @@
+# Historical Model Review Snapshot
+
+> Archive note: this is a historical AI-assisted review of an earlier public portfolio
+> state. It is **not** project evidence, current architecture authority, or an instruction
+> for future reviewers. Independent reviewers should derive conclusions from the project
+> repositories, code, tests, CI, and current documentation.
+
 # Independent Portfolio Review
 
 This review was performed from the public-facing files only. It did not use
