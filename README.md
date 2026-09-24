@@ -42,8 +42,8 @@ This is a **conceptual development path**, not a literal ordering of public comm
 | **LocalModelService** | Infrastructure project | Runnable local inference service with OpenAI-compatible API and modular tool/business seams |
 | **AutoRoute Gateway** | Infrastructure project | Capability-aware routing implementation with pytest-based routing/fallback verification |
 | **Statebar MCP** | Active engineering / Beta | MCP + REST state layer with deterministic reconciliation and regression-tested state semantics |
-| **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, strict static/runtime checks; live shadow validation remains incomplete |
-| **LCE V1** | Research engineering | Public verification gate, synthetic boundary experiments, negative controls, recovery tests, and replication surface; external empirical validation remains open |
+| **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, test/coverage gates and Ruff/mypy no-regression baselines; live shadow validation remains incomplete |
+| **LCE** | Research engineering | Public verification gate, retained negative results, controlled/synthetic research fixtures, recovery tests and replication surfaces; external empirical validation remains open |
 | **MR Habitat** | Product prototype | Runnable bounded 3D prototype; current inputs are authored/mock and real MR integration remains open |
 
 These labels describe the evidence currently present in the repositories. They are not claims of equivalent production maturity.
@@ -80,8 +80,8 @@ The portfolio is intended to be inspected rather than accepted from description 
 
 | Project | Where to verify |
 | --- | --- |
-| **Mind Runtime** | Repository tests, strict mypy/Ruff configuration, deterministic certification artifacts, restart/recovery validation, and explicit delivery-gate status |
-| **LCE V1** | `python scripts/verify.py`, public research experiments, retained negative results, recovery matrices, and the provider-agnostic replication surface |
+| **Mind Runtime** | Repository tests/coverage, Ruff/mypy no-regression gates, deterministic certification artifacts, restart/recovery validation, and explicit incomplete live-validation status |
+| **LCE** | `python scripts/verify.py`, public research experiments, retained negative results, recovery matrices, and the provider-agnostic replication surface |
 | **Statebar MCP** | Regression tests around evidence priority, delayed observations, assistant-message exclusion, semantic admission, and sleep/wake state transitions |
 | **AutoRoute Gateway** | pytest / pytest-asyncio routing tests around capability filtering, credential isolation, fallback, and streaming commit behavior |
 | **TradingWEB** | TypeScript checks, ESLint, Vitest, Playwright, i18n checks, and migration-reconciliation scripts |
