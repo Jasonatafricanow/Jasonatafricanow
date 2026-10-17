@@ -4,8 +4,7 @@ I build **AI-native systems and operational software**, with a current research 
 long-lived AI systems around **continuity, authority, recovery, and longitudinal
 understanding rather than larger prompts**.
 
-The public repositories come from two project lines. They are related by recurring
-engineering problems, not by a claim that one codebase literally evolved into the other.
+The portfolio spans operational systems and AI/agent infrastructure, plus a practical Agent-first product built to test those boundaries in everyday use. Projects are related by recurring engineering problems, not by a claim of shared code lineage.
 
 ## Portfolio map
 
@@ -28,7 +27,9 @@ The operational line deals with shared business state, retries, offline work, mi
 and transaction boundaries. The AI/agent line deals with model-serving boundaries,
 routing, current state, runtime authority and longitudinal cognition.
 
-The connection between the two lines is architectural rather than code reuse:
+**Applied Agent product:** [Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP) — private family NAS health/nutrition tracking where low-effort input, source-aware corrections and an explicit shared-household trust boundary matter more than maximal feature count.
+
+The connection between the projects is architectural rather than code reuse:
 
 ```text
 temporary work      != committed effect
@@ -53,11 +54,18 @@ full development chronology.
 | **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, test/coverage gates and Ruff/mypy no-regression baselines; live shadow validation remains incomplete |
 | **LCE** | Research engineering | Public verification gate, retained negative results, controlled/synthetic research fixtures, recovery tests and replication surfaces; external empirical validation remains open |
 | **MR Habitat** | Product prototype | Runnable bounded 3D prototype; current inputs are authored/mock and real MR integration remains open |
+| **Nutrition Tracker MCP** | Tested portfolio prototype | Compact Agent MCP, private NAS household context, editable nutrition records, batch health ingestion, 7/30-day reports; real NAS/Agent usability validation remains open |
 
 These labels describe the evidence currently present in the repositories. They are not
 claims of equivalent production maturity.
 
 ## Selected work
+
+### Applied Agent product
+
+**[Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP)** — A local-first, Agent-first health and nutrition tracker for individuals and a trusted family NAS. Instead of enforcing perfect measurements, it records attributed estimates with a short conversation and allows audit-backed correction. Photo entries receive a single identity/portion confirmation. It exposes two compact default MCP tools, reuses deterministic SQLite calculations, and provides a professional-first dashboard that can be simplified without losing records.
+
+The important engineering decision was to **deliberately remove SaaS-like per-member credential and consent machinery** from a trusted household instance, while retaining remote authentication and documenting the resulting privacy tradeoff. [Product decisions and evidence](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP#portfolio-overview). CI covers multiple Node versions and time zones; production NAS/Tailscale/Hermes integration and real Agent usability are not yet validated.
 
 ### Long-lived AI systems
 
@@ -141,6 +149,7 @@ architecture records as primary evidence.
 | **TradingWEB POS** | Type checking, Vitest/Jest suites, linting, native bundling and Android build helpers |
 | **ShopifyDataBridge** | TypeScript validation, linting, Vitest and tests preventing direct target-database ownership |
 | **MR Habitat** | Local prototype, automated tests/build, verification record and product-experiment notes |
+| **Nutrition Tracker MCP** | Node.js tests and Actions matrix, documented correction/idempotency semantics, family NAS permission tradeoff, product strategy decision record and live-Agent limitations |
 
 Each repository README states its own limitations and distinguishes implemented behavior
 from future work or unverified deployment claims.
@@ -161,4 +170,4 @@ cheap; proving that the layer is necessary is not.
 
 ## Working stack
 
-Python · TypeScript · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · mypy · Ruff · Vitest · Playwright
+Python · TypeScript · Node.js · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · mypy · Ruff · Vitest · Playwright
