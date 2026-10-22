@@ -1,173 +1,39 @@
 # Jiasen Wang
 
-I build **AI-native systems and operational software**, with a current research focus on
-long-lived AI systems around **continuity, authority, recovery, and longitudinal
-understanding rather than larger prompts**.
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-The portfolio spans operational systems and AI/agent infrastructure, plus a practical Agent-first product built to test those boundaries in everyday use. Projects are related by recurring engineering problems, not by a claim of shared code lineage.
-
-## Portfolio map
-
-```text
-Operational engineering                  AI / agent systems
-
-TradingWEB                               LocalModelService
-├─ TradingWEB POS                        └─ AutoRoute Gateway
-└─ ShopifyDataBridge                            |
-                                                v
-                                          Statebar MCP
-                                                |
-                                                v
-                                           Mind Runtime
-                                           ├─ MR Habitat
-                                           └─ LCE
-```
-
-The operational line deals with shared business state, retries, offline work, migration
-and transaction boundaries. The AI/agent line deals with model-serving boundaries,
-routing, current state, runtime authority and longitudinal cognition.
-
-**Applied Agent product:** [Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP) — private family NAS health/nutrition tracking where low-effort input, source-aware corrections and an explicit shared-household trust boundary matter more than maximal feature count.
-
-The connection between the projects is architectural rather than code reuse:
-
-```text
-temporary work      != committed effect
-parsed input        != admitted state
-candidate           != accepted state
-retrieval           != authority
-projection          != source of truth
-```
-
-Several projects predate their current public Git repositories and were later published as
-cleaned baselines. Public repository creation dates therefore describe publication, not the
-full development chronology.
-
-## Current status
-
-| Project | Current stage | Public evidence boundary |
-| --- | --- | --- |
-| **TradingWEB / POS / ShopifyDataBridge** | Engineering projects | Runnable repositories with type/lint/test surfaces and explicit transaction, offline, migration and integration boundaries |
-| **LocalModelService** | Infrastructure project | Runnable local inference service with OpenAI-compatible API, authentication/session boundaries and modular adapters |
-| **AutoRoute Gateway** | Infrastructure project | Capability-aware routing implementation with credential isolation, fallback semantics and pytest verification |
-| **Statebar MCP** | Active engineering / Beta | MCP + REST state layer with deterministic reconciliation and regression-tested state semantics |
-| **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, test/coverage gates and Ruff/mypy no-regression baselines; live shadow validation remains incomplete |
-| **LCE** | Research engineering | Public verification gate, retained negative results, controlled/synthetic research fixtures, recovery tests and replication surfaces; external empirical validation remains open |
-| **MR Habitat** | Product prototype | Runnable bounded 3D prototype; current inputs are authored/mock and real MR integration remains open |
-| **Nutrition Tracker MCP** | Tested portfolio prototype | Compact Agent MCP, private NAS household context, editable nutrition records, batch health ingestion, 7/30-day reports; real NAS/Agent usability validation remains open |
-
-These labels describe the evidence currently present in the repositories. They are not
-claims of equivalent production maturity.
+I build software for store operations and agents that keep useful state over time. My projects include an online store with a POS and Shopify migration sender, a family nutrition tracker, and local inference and memory systems.
 
 ## Selected work
 
-### Applied Agent product
-
-**[Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP)** — A local-first, Agent-first health and nutrition tracker for individuals and a trusted family NAS. Instead of enforcing perfect measurements, it records attributed estimates with a short conversation and allows audit-backed correction. Photo entries receive a single identity/portion confirmation. It exposes two compact default MCP tools, reuses deterministic SQLite calculations, and provides a professional-first dashboard that can be simplified without losing records.
-
-The important engineering decision was to **deliberately remove SaaS-like per-member credential and consent machinery** from a trusted household instance, while retaining remote authentication and documenting the resulting privacy tradeoff. [Product decisions and evidence](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP#portfolio-overview). CI covers multiple Node versions and time zones; production NAS/Tailscale/Hermes integration and real Agent usability are not yet validated.
-
-### Long-lived AI systems
-
-**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)** — A stateful runtime
-for long-lived agents. It separates evidence, memory, runtime identity, canonical state,
-persistence, policy, expression, telemetry, and observation so inference can continue from
-authorized state rather than reconstructing authority from history.
-
-**[LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)** —
-A research-engineering system for longitudinal understanding. Its architecture was shaped
-through failed hypotheses, no-future evaluation, negative controls, adversarial regressions,
-immutable revisions, and an explicit rule that derived cognition cannot become factual
-authority by itself.
-
-**[Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp)** — A lightweight
-current-state layer for agents using evidence, semantic time, deterministic reconciliation,
-lifecycle rules, and anti-self-pollution boundaries.
-
-**[MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat)** — A spatial-presence
-experiment that projects agent state into a lightweight environment without giving the
-visualization ownership of cognition.
-
-### LLM infrastructure
-
-**[AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway)** — A
-capability-aware multi-provider / multi-credential LLM gateway with explicit credential
-state, fallback semantics, and a streaming commit boundary.
-
-**[LocalModelService / OpenClaw-CS](https://github.com/Jasonatafricanow/LocalModelService)** —
-A local-first Ollama / FastAPI model service exposing OpenAI-compatible APIs, streaming,
-vision-capable models, tools, and business adapters behind a replaceable service boundary.
-
-### Operational systems
-
-**[TradingWEB](https://github.com/Jasonatafricanow/TradingWEB)** — A full-stack commerce
-and operations system covering products, customers, orders, payments, administration, POS
-contracts, and migration integration.
-
-**[TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS)** — An offline-first
-React Native / Expo POS client with idempotent resynchronization, hardware abstraction,
-staff/shift workflows, and explicit local-vs-server state boundaries.
-
-**[ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge)** — A
-Shopify-to-TradingWEB migration boundary that parses, sanitizes, maps and audits source
-data before TradingWEB performs target admission.
-
-## How to review the smaller repositories
-
-Repository size is not used here as a maturity metric. Several components are intentionally
-narrow because responsibilities that do not belong to them stay outside the repository.
-
-For a compact project, the useful questions are:
-
-```text
-What contract does it own?
-What state / authority is it allowed to mutate?
-What failure semantics are implemented?
-What responsibilities are explicitly excluded?
-Which regressions prove those boundaries?
-```
-
-A small repository with a complete bounded contract is different from an incomplete larger
-system. The READMEs therefore state both implemented surfaces and explicit non-goals so the
-difference can be inspected rather than inferred from file count or repository size.
-
-## Verifiable outputs
-
-The portfolio is intended to be inspected rather than accepted from description alone.
-Each project keeps its own implementation, verification surface, limitations, and current
-evidence boundary; reviewers should treat repository code, tests, CI, and current
-architecture records as primary evidence.
-
-| Project | Where to verify |
+| Project | Concrete result |
 | --- | --- |
-| **Mind Runtime** | Repository tests/coverage, Ruff/mypy no-regression gates, deterministic certification artifacts, restart/recovery validation, and explicit incomplete live-validation status |
-| **LCE** | `python scripts/verify.py`, public research experiments, retained negative results, recovery matrices, and the provider-agnostic replication surface |
-| **Statebar MCP** | Regression tests around evidence priority, delayed observations, assistant-message exclusion, semantic admission, replay and sleep/wake state transitions |
-| **AutoRoute Gateway** | pytest routing tests around capability filtering, credential isolation, fallback and streaming commit behavior |
-| **LocalModelService** | API/session authentication regressions, owner-partitioned sessions, local-bind defaults and CI |
-| **TradingWEB** | TypeScript checks, ESLint, Vitest, Playwright, i18n checks, migration replay and integration checks |
-| **TradingWEB POS** | Type checking, Vitest/Jest suites, linting, native bundling and Android build helpers |
-| **ShopifyDataBridge** | TypeScript validation, linting, Vitest and tests preventing direct target-database ownership |
-| **MR Habitat** | Local prototype, automated tests/build, verification record and product-experiment notes |
-| **Nutrition Tracker MCP** | Node.js tests and Actions matrix, documented correction/idempotency semantics, family NAS permission tradeoff, product strategy decision record and live-Agent limitations |
+| [TradingWEB](https://github.com/Jasonatafricanow/TradingWEB) | Online storefront, payments and inventory with transactional payment finalization. |
+| [TradingWEB POS](https://github.com/Jasonatafricanow/TradingWEB-POS) | Offline checkout client with idempotent order resubmission and hardware adapters. |
+| [ShopifyDataBridge](https://github.com/Jasonatafricanow/ShopifyDataBridge) | CSV migration sender that lets TradingWEB validate and commit imported records. |
+| [Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP) | Agent meal logging, traceable corrections and a household dashboard backed by SQLite. |
+| [LocalModelService](https://github.com/Jasonatafricanow/LocalModelService) | Installer-USB/local-inference appliance prototype with a WhatsApp support module. |
+| [AutoRoute Gateway](https://github.com/Jasonatafricanow/AutoRoute-Gateway) | Configured-order provider fallback with credential isolation and streaming commit rules. |
+| [Statebar MCP](https://github.com/Jasonatafricanow/Statebar-mcp) | Chinese observation rules and deterministic reconciliation for current user state. |
+| [Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime) | Persistent agent state with admission, commit/abort and restart recovery. |
+| [MR-Mem](https://github.com/Jasonatafricanow/MR-Mem) | Semantic-memory sidecar that retains provenance to the host’s original history. |
+| [LCE](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine) | Longitudinal-structure research with retained negative results and replay checks. |
+| [MR Habitat](https://github.com/Jasonatafricanow/MR-Habitat) | Interactive 3D cabin that presents mock agent activities using procedural assets. |
 
-Each repository README states its own limitations and distinguishes implemented behavior
-from future work or unverified deployment claims.
+## Interface previews
 
-## Development and architecture notes
+[![Nutrition Tracker demo dashboard](https://raw.githubusercontent.com/Jasonatafricanow/Nutrition-Tracker-MCP/638ce240cb69680cacdb20673e8e60650595e863/assets/dashboard-preview.jpg)](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP)
 
-**[Architecture Notes Across Two Project Lines](ARCHITECTURE-JOURNEY.md)** explains where
-the same state/authority/recovery questions appeared in otherwise independent projects.
-It is not a claim of shared code lineage.
+[![MR Habitat public cabin prototype](https://raw.githubusercontent.com/Jasonatafricanow/MR-Habitat/247dea6e2bd06427681f2acd7c8a44aa2ff601f4/docs/screenshots/desktop.png)](https://github.com/Jasonatafricanow/MR-Habitat)
 
-## Engineering philosophy
+Nutrition Tracker uses seeded demo data; Habitat shows the public mock-driven prototype. Open each repository for local run instructions and its verification surface.
 
-> **Build for the original problem, not for the maximum available capability.**
+## Engineering thread
 
-Capability is not the same as usefulness. Architecture should preserve the target function
-before expanding the feature surface. In AI-native development, generating another layer is
-cheap; proving that the layer is necessary is not.
+Retries should not duplicate sales. An older observation should not overwrite a newer one. A derived memory should stay traceable to its source. These are the recurring problems behind the projects; [architecture notes](ARCHITECTURE-JOURNEY.md) connect the decisions.
 
-## Working stack
+## Evidence and scope
 
-Python · TypeScript · Node.js · FastAPI · Next.js · React · React Native / Expo · SQLite · MySQL · MCP · OpenAI-compatible APIs · Ollama · pytest · mypy · Ruff · Vitest · Playwright
+The repositories span tested prototypes, infrastructure and research; deployment maturity varies. Public tests and screenshots are linked evidence, not claims of real-store acceptance or externally validated research gains. Several projects were published as cleaned baselines, so repository dates are publication dates rather than full development history.
+
+Python · TypeScript · React / React Native · FastAPI · Next.js · SQLite · MySQL · MCP
