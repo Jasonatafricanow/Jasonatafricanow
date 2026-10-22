@@ -1,41 +1,13 @@
 # Architecture Notes Across Two Project Lines
 
-## What is connected, and what is not
+## Shared engineering questions
 
-The public repositories come from two project lines:
+| Operational software | Agent and AI systems |
+| --- | --- |
+| TradingWEB, POS, ShopifyDataBridge | LocalModelService, AutoRoute Gateway, Statebar MCP |
+| Nutrition Tracker MCP | Mind Runtime, MR-Mem, LCE, MR Habitat |
 
-```text
-Operational engineering                 AI / agent systems
-
-TradingWEB                               LocalModelService
-├─ TradingWEB POS                        └─ AutoRoute Gateway
-└─ ShopifyDataBridge                            |
-                                                v
-                                          Statebar MCP
-                                                |
-                                                v
-                                           Mind Runtime
-                                           ├─ MR Habitat
-                                           └─ LCE
-```
-
-This is **not** a claim that the operational repositories evolved into the AI repositories,
-that they share a package lineage, or that public commit timestamps reproduce the original
-development chronology. Several older systems were cleaned and published later.
-
-The reason to discuss them together is narrower: independent projects kept exposing the
-same class of systems question.
-
-```text
-What is temporary?
-What is committed?
-Who owns the authoritative state?
-When is retry still semantically legal?
-What may be derived without becoming source truth?
-```
-
-The sections below show where those questions appeared in each line. Similarity of design
-concerns should not be read as evidence of code reuse.
+These are project groups, not a dependency or code-lineage graph. The comparisons concern retry, committed state, source authority and recovery. Public repositories may start at cleaned publication baselines.
 
 ## 1. Product systems: state matters before AI
 
