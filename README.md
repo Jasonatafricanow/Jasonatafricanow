@@ -4,28 +4,48 @@ I build **AI-native systems and operational software**, with a current research 
 long-lived AI systems around **continuity, authority, recovery, and longitudinal
 understanding rather than larger prompts**.
 
-The portfolio spans operational systems and AI/agent infrastructure, plus a practical Agent-first product built to test those boundaries in everyday use. Projects are related by recurring engineering problems, not by a claim of shared code lineage.
+The portfolio spans operational software, AI/agent infrastructure, semantic-memory research, a cognitive/affective harness, and emerging multi-agent applications. The projects share recurring engineering questions about authority and recovery; this is **not** a claim that they share code lineage or are all deployed together.
 
 ## Portfolio map
 
 ```text
-Operational engineering                  AI / agent systems
+Operational engineering                   AI / agent engineering
 
-TradingWEB                               LocalModelService
-├─ TradingWEB POS                        └─ AutoRoute Gateway
-└─ ShopifyDataBridge                            |
-                                                v
-                                          Statebar MCP
-                                                |
-                                                v
-                                           Mind Runtime
-                                           ├─ MR Habitat
-                                           └─ LCE
+TradingWEB                                LocalModelService / AutoRoute Gateway
+├─ TradingWEB POS                         Statebar MCP (current-state semantics)
+└─ ShopifyDataBridge                      MR-Mem (source-backed semantic memory)
+                                         ├─ Thread / retrieval
+                                         └─ LCE (optional longitudinal projection)
+                                         Mind Runtime (cognitive / affective harness)
+                                         Agent-WorkBench (business workflow, in progress)
+                                         MR Habitat (bounded spatial experiment)
 ```
 
-The operational line deals with shared business state, retries, offline work, migration
-and transaction boundaries. The AI/agent line deals with model-serving boundaries,
-routing, current state, runtime authority and longitudinal cognition.
+A separate **Agent Host** (existing infrastructure, not a new project in this portfolio)
+owns Sessions, Runs, tools, permissions, and actual execution. In the *proposed* integration,
+[Agent-WorkBench](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1) owns
+business tasks/events/timers, [Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)
+owns cognitive and affective state plus cognitive wake intent, and
+[MR-Mem](https://github.com/Jasonatafricanow/MR-Mem) owns semantic memory,
+provenance and Thread/LCE projections.
+
+```text
+External events --> WorkBench SQL -- business wake event --> existing Agent Host
+                         ^                                      |
+                         |                                  agent tools
+                         +--------------------------------------+
+                                                   |
+                                   optional cognitive / memory context
+                                   Mind Runtime        MR-Mem
+```
+
+**This is an ownership diagram, not a deployed integration diagram.** WorkBench's
+[design branch](https://github.com/Jasonatafricanow/Agent-WorkBench/tree/feat/modular-backend-20261116),
+MR-Mem's [host-adapter PR](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
+and MR's [architecture PR](https://github.com/Jasonatafricanow/Mind-Runtime/pull/67)
+remain in progress. The operational line covers business state, retries, offline
+work and migration; the AI/agent line explores the same questions in model serving,
+memory, cognition and execution coordination.
 
 **Applied Agent product:** [Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP) — private family NAS health/nutrition tracking where low-effort input, source-aware corrections and an explicit shared-household trust boundary matter more than maximal feature count.
 
@@ -51,7 +71,9 @@ full development chronology.
 | **LocalModelService** | Infrastructure project | Runnable local inference service with OpenAI-compatible API, authentication/session boundaries and modular adapters |
 | **AutoRoute Gateway** | Infrastructure project | Capability-aware routing implementation with credential isolation, fallback semantics and pytest verification |
 | **Statebar MCP** | Active engineering / Beta | MCP + REST state layer with deterministic reconciliation and regression-tested state semantics |
-| **Mind Runtime** | Research engineering / pre-production | Deterministic certification, persistence/restart validation, test/coverage gates and Ruff/mypy no-regression baselines; live shadow validation remains incomplete |
+| **MR-Mem** | Standalone memory research / working implementation | AML 2026 Round 2 official run (project-reported average **54.37**), synthetic and public benchmark runs, source-backed semantic memory and Thread/LCE research; WorkBench host integration remains a Draft PR |
+| **Mind Runtime** | Cognitive/affective harness research / pre-production | Persistent state and runtime binding, certification and restart tests; causal/experiential research and live Host integration remain incomplete |
+| **Agent-WorkBench** | Early implementation / integration design | Draft PR #1 has SQLite bootstrap, scoped tool contracts, business wake-event ledger and 23 passing offline contract/SQL tests; no concrete production TaskService, live Host/Telegram, or NAS deployment |
 | **LCE** | Research engineering | Public verification gate, retained negative results, controlled/synthetic research fixtures, recovery tests and replication surfaces; external empirical validation remains open |
 | **MR Habitat** | Product prototype | Runnable bounded 3D prototype; current inputs are authored/mock and real MR integration remains open |
 | **Nutrition Tracker MCP** | Tested portfolio prototype | Compact Agent MCP, private NAS household context, editable nutrition records, batch health ingestion, 7/30-day reports; real NAS/Agent usability validation remains open |
@@ -61,6 +83,24 @@ claims of equivalent production maturity.
 
 ## Selected work
 
+### Agent workflow and execution continuity
+
+**[Agent-WorkBench](https://github.com/Jasonatafricanow/Agent-WorkBench)** —
+An independent, event-driven business workbench for several agents. Its design
+uses SQL as the authority for tasks, commitments, dependencies, approval and
+reminder history; a durable wake-event inbox/outbox bridges to an existing Agent
+Host without implementing a second Agent loop. Semantic context is obtained,
+when authorized, from MR-Mem, not copied into the task database.
+
+**Evidence and maturity:** [Draft PR #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1)
+includes a [system blueprint](https://github.com/Jasonatafricanow/Agent-WorkBench/blob/feat/modular-backend-20261116/docs/PROJECT_BLUEPRINT.md),
+a [cross-repository authority matrix](https://github.com/Jasonatafricanow/Agent-WorkBench/blob/feat/modular-backend-20261116/docs/CROSS_REPO_INTERFACE_MATRIX.md),
+a scoped Agent tool façade, SQLite integrity tests and an event ledger.
+The feature branch's offline Quality workflow passed **23 tests** at the reviewed
+commit. The actual transactional TaskService, authenticated Host/Telegram
+integration, deferred-run resumption, dashboard and deployment are **not complete**.
+The default branch is intentionally a minimal baseline.
+
 ### Applied Agent product
 
 **[Nutrition Tracker MCP](https://github.com/Jasonatafricanow/Nutrition-Tracker-MCP)** — A local-first, Agent-first health and nutrition tracker for individuals and a trusted family NAS. Instead of enforcing perfect measurements, it records attributed estimates with a short conversation and allows audit-backed correction. Photo entries receive a single identity/portion confirmation. It exposes two compact default MCP tools, reuses deterministic SQLite calculations, and provides a professional-first dashboard that can be simplified without losing records.
@@ -69,10 +109,28 @@ The important engineering decision was to **deliberately remove SaaS-like per-me
 
 ### Long-lived AI systems
 
-**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)** — A stateful runtime
-for long-lived agents. It separates evidence, memory, runtime identity, canonical state,
-persistence, policy, expression, telemetry, and observation so inference can continue from
-authorized state rather than reconstructing authority from history.
+**[MR-Mem](https://github.com/Jasonatafricanow/MR-Mem)** —
+A standalone, provenance-aware agent-memory system. It compiles source evidence
+into semantic memory, maintains bounded Thread context and supports longitudinal
+LCE projections without promoting retrieval results into factual authority.
+The [project README](https://github.com/Jasonatafricanow/MR-Mem#readme) reports
+an AML 2026 Round 2 official-run average of **54.37** (2026-11-02) and later local
+retrieval/readout evaluations. These are identified benchmark measurements,
+not a claim of production memory quality across arbitrary hosts. The
+[WorkBench user-context adapter](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
+is a Draft integration; its quality/privacy checks pass, while a pre-existing
+Path-A offline smoke incompatibility remains.
+
+**[Mind Runtime](https://github.com/Jasonatafricanow/Mind-Runtime)** —
+A research-engineering **cognitive and affective harness** for long-lived
+agent identity and the effects of experience. Its Soul/Body boundary separates
+evidence, appraisal, affect, relationship, internalization, cognitive wake
+semantics and bounded DecisionContext from the Agent Host's planning, tool
+permissions and real-world execution. Persistence/restart and deterministic
+verification are implemented; a complete live causal validation of the
+experience-to-behavior chain is **not claimed**. A
+[Draft integration design](https://github.com/Jasonatafricanow/Mind-Runtime/pull/67)
+clarifies how it relates to WorkBench without making MR a generic Agent OS.
 
 **[LCE — Longitudinal Cognition Engine](https://github.com/Jasonatafricanow/LCE-Longitudinal-Cognition-Engine)** —
 A research-engineering system for longitudinal understanding. Its architecture was shaped
@@ -140,7 +198,9 @@ architecture records as primary evidence.
 
 | Project | Where to verify |
 | --- | --- |
-| **Mind Runtime** | Repository tests/coverage, Ruff/mypy no-regression gates, deterministic certification artifacts, restart/recovery validation, and explicit incomplete live-validation status |
+| **MR-Mem** | [Main README](https://github.com/Jasonatafricanow/MR-Mem#readme), [technical report](https://github.com/Jasonatafricanow/MR-Mem/blob/main/docs/TECHNICAL_REPORT.md), public/synthetic evaluations and [host adapter Draft PR #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22); note the still-failing Path-A smoke gate |
+| **Mind Runtime** | Repository tests/coverage, deterministic certification and restart validation, [Soul/Body architecture freeze](https://github.com/Jasonatafricanow/Mind-Runtime/blob/main/docs/architecture/MR_ARCHITECTURE_LOCK_v1_1.md), [Draft PR #67](https://github.com/Jasonatafricanow/Mind-Runtime/pull/67) and explicit incomplete live causal-validation status |
+| **Agent-WorkBench** | [Draft PR #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1): initial schema, workspace-FK and grant tests, wake-event leasing/idempotence/unknown state, [blueprint](https://github.com/Jasonatafricanow/Agent-WorkBench/blob/feat/modular-backend-20261116/docs/PROJECT_BLUEPRINT.md), and known unimplemented production components |
 | **LCE** | `python scripts/verify.py`, public research experiments, retained negative results, recovery matrices, and the provider-agnostic replication surface |
 | **Statebar MCP** | Regression tests around evidence priority, delayed observations, assistant-message exclusion, semantic admission, replay and sleep/wake state transitions |
 | **AutoRoute Gateway** | pytest routing tests around capability filtering, credential isolation, fallback and streaming commit behavior |
@@ -157,7 +217,8 @@ from future work or unverified deployment claims.
 ## Development and architecture notes
 
 **[Architecture Notes Across Two Project Lines](ARCHITECTURE-JOURNEY.md)** explains where
-the same state/authority/recovery questions appeared in otherwise independent projects.
+the same state/authority/recovery questions appeared in otherwise independent projects,
+including the distinct responsibilities of MR-Mem, Mind Runtime and Agent-WorkBench.
 It is not a claim of shared code lineage.
 
 ## Engineering philosophy

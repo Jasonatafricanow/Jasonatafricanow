@@ -7,21 +7,20 @@ The public repositories come from two project lines:
 ```text
 Operational engineering                 AI / agent systems
 
-TradingWEB                               LocalModelService
-├─ TradingWEB POS                        └─ AutoRoute Gateway
-└─ ShopifyDataBridge                            |
-                                                v
-                                          Statebar MCP
-                                                |
-                                                v
-                                           Mind Runtime
-                                           ├─ MR Habitat
-                                           └─ LCE
+TradingWEB                               LocalModelService / AutoRoute Gateway
+├─ TradingWEB POS                        Statebar MCP (short-lived state)
+└─ ShopifyDataBridge                     MR-Mem (source-backed semantic memory)
+                                        └─ LCE (optional longitudinal projection)
+                                        Mind Runtime (cognitive/affective harness)
+                                        Agent-WorkBench (business events/tasks)
+                                        MR Habitat (spatial prototype)
 ```
 
 This is **not** a claim that the operational repositories evolved into the AI repositories,
 that they share a package lineage, or that public commit timestamps reproduce the original
-development chronology. Several older systems were cleaned and published later.
+development chronology. Several older systems were cleaned and published later. This
+classification also **does not** mean all AI components are presently wired together:
+Agent-WorkBench and the new Host integrations are still on Draft branches.
 
 The reason to discuss them together is narrower: independent projects kept exposing the
 same class of systems question.
@@ -305,7 +304,92 @@ A model interpretation, vector region, higher-order candidate, or accepted cogni
 
 Otherwise the system creates epistemic compound interest on its own mistakes.
 
-## 7. MR Habitat: architecture should permit disposable experiments
+## 7. MR-Mem: extracting reusable memory from cognition and execution
+
+A persistent agent needs to retrieve more than disconnected excerpts, but
+retrieved meaning must never become a fresh source of factual authority.
+
+[MR-Mem](https://github.com/Jasonatafricanow/MR-Mem) isolates the
+semantic-memory problem from the surrounding Agent Host and from Mind Runtime's
+affect, decision, and execution-adjacent concerns. The design has two modes that
+must not be conflated:
+
+- **Host-sidecar:** the native Host retains the authoritative raw conversation.
+  Versioned SourceRefs let MR-Mem admit accepted semantics, invalidate stale
+  support and selectively hydrate current source text.
+- **Standalone benchmark adapter:** an AML-specific runtime can store raw
+  messages because the benchmark host does not provide an equivalent native
+  store. This is not a mandate for all production integrations to duplicate
+  histories.
+
+Canonical semantic records support bounded online Threads and optional LCE
+longitudinal projections. Thread/LCE are derived structures, not parallel
+authorities for original user statements. The distinction supports rebuild,
+source-revision handling and precision-oriented retrieval.
+
+### What can be verified
+
+The [project repository](https://github.com/Jasonatafricanow/MR-Mem)
+reports an AML 2026 Round 2 official-run average of **54.37** and publishes
+research/verification material. The [Draft WorkBench adapter PR #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
+adds scoped source and grant checks; real Host admission and cross-Agent
+integration are not yet implemented. The pre-existing Path-A offline smoke
+compatibility failure remains a real gate, despite the passing quality checks.
+
+## 8. Agent-WorkBench: business continuity is not agent cognition
+
+The memory and runtime projects exposed a separate, everyday problem:
+what happens to actual work when an Agent Session ends or a different
+Agent takes over?
+
+A task can be due, waiting on somebody, or under external commitment even
+when no agent is generating tokens. Such work requires a deterministic,
+shared business authority rather than another prompt, an LCE Line, or the
+Host's transient Run state.
+
+[Agent-WorkBench](https://github.com/Jasonatafricanow/Agent-WorkBench)
+therefore separates:
+
+```text
+external event / business timer
+             |
+             v
+WorkBench SQL: task / event / dependency / approval / delivery intent
+             |
+             v
+durable wake event --> existing Agent Host: Session / Run / tools
+                                       |
+                       optional context from MR and MR-Mem
+```
+
+The roles are strict:
+
+- **WorkBench:** tasks, versions, business facts, dependencies, timed follow-ups,
+  authorized commitments, outbox and audit.
+- **Existing Agent Host:** Session/Run lifecycle, checkpoint, deferred tool call,
+  tool permission and execution. It is not a new fourth repository here.
+- **Mind Runtime:** cognitive and affective state, experience-dependent
+  intent tendency and WakeSignal; it cannot grant Host tool permission.
+- **MR-Mem:** source-backed, authorized semantic history, Thread/LCE; retrieval
+  cannot silently override current task SQL.
+
+### Why these boundaries matter
+
+A Host Run can finish without the task being DONE. A WorkBench task can
+remain WAITING when no Host tool call is suspended. An MR WakeSignal can
+exist without the Body authorizing the corresponding external action.
+A sent message is an operational receipt, not evidence that the recipient
+read, approved or liked it.
+
+This project is an **in-progress engineering slice**, not a fully functioning
+always-on Agent deployment. [Draft PR #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1)
+contains an initial schema, scoped tool contracts, wake-event dedupe/lease
+behavior, negative SQL isolation tests and a
+[system blueprint](https://github.com/Jasonatafricanow/Agent-WorkBench/blob/feat/modular-backend-20261116/docs/PROJECT_BLUEPRINT.md).
+The concrete transactional TaskService, real Host Run bridge, Telegram,
+scheduler-to-event integration, dashboard and NAS deployment remain to be built.
+
+## 9. MR Habitat: architecture should permit disposable experiments
 
 Observation Window answered:
 
@@ -342,8 +426,11 @@ The projects look different, but the same distinctions recur:
 | POS | queued local order | idempotently accepted server order |
 | LLM routing | available candidate | committed response stream |
 | Statebar | extracted observation | reconciled canonical state |
-| MR | retrieval / interpretation | authorized runtime state |
+| MR | cognitive proposal / retrieval | accepted runtime cognition, not Host tool authority |
+| MR-Mem | source-backed semantic candidates | canonical semantic memory; raw Host source remains authority |
 | LCE | derived structure | accepted derived cognition, still not factual Memory |
+| WorkBench | incoming message / task-operation proposal | SQL task version, append-only event and authorized business outcome |
+| Agent Host | planned call / deferred call | Host-owned Run checkpoint and external tool receipt |
 | Habitat | visual projection | no cognition authority at all |
 
 The vocabulary changes. The engineering question does not:
@@ -388,3 +475,16 @@ The intended signal is narrower:
 - preserving negative research results;
 - changing abstractions when evidence contradicts them;
 - keeping scope small enough that a project can still say what it does **not** own.
+
+## Current integration evidence boundary (2026-11)
+
+The cross-project architecture is documented, but the implementation is intentionally
+not described as production-integrated. The three review points are:
+[Agent-WorkBench #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1)
+for business state and event contracts,
+[MR-Mem #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
+for source/authorization bindings, and
+[Mind Runtime #67](https://github.com/Jasonatafricanow/Mind-Runtime/pull/67)
+for the frozen Soul/Body authority clarification. The existing Host is
+responsible for Session/Run and tool execution; it has not been claimed as a
+working production connection to all three.
