@@ -20,7 +20,7 @@ This is **not** a claim that the operational repositories evolved into the AI re
 that they share a package lineage, or that public commit timestamps reproduce the original
 development chronology. Several older systems were cleaned and published later. This
 classification also **does not** mean all AI components are presently wired together:
-Agent-WorkBench and the new Host integrations are still on Draft branches.
+several cross-repository Host/MR-Mem integrations remain on Draft branches or incomplete live wiring.
 
 The reason to discuss them together is narrower: independent projects kept exposing the
 same class of systems question.
@@ -330,8 +330,9 @@ source-revision handling and precision-oriented retrieval.
 ### What can be verified
 
 The [project repository](https://github.com/Jasonatafricanow/MR-Mem)
-reports an AML 2026 Round 2 official-run average of **54.37** and publishes
-research/verification material. The [Draft WorkBench adapter PR #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
+reports an official AML 2026 Round 2 Full track leaderboard score of **59.78**
+(**#26** overall, **tied #4** on D1/D2 governance, published 2026-11-19) alongside
+research and local evaluation material. The [Draft WorkBench adapter PR #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
 adds scoped source and grant checks; real Host admission and cross-Agent
 integration are not yet implemented. The pre-existing Path-A offline smoke
 compatibility failure remains a real gate, despite the passing quality checks.
@@ -381,13 +382,15 @@ exist without the Body authorizing the corresponding external action.
 A sent message is an operational receipt, not evidence that the recipient
 read, approved or liked it.
 
-This project is an **in-progress engineering slice**, not a fully functioning
-always-on Agent deployment. [Draft PR #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1)
-contains an initial schema, scoped tool contracts, wake-event dedupe/lease
-behavior, negative SQL isolation tests and a
-[system blueprint](https://github.com/Jasonatafricanow/Agent-WorkBench/blob/feat/modular-backend-20261116/docs/PROJECT_BLUEPRINT.md).
-The concrete transactional TaskService, real Host Run bridge, Telegram,
-scheduler-to-event integration, dashboard and NAS deployment remain to be built.
+This project is an **active modular backend**, not yet a complete end-to-end
+always-on deployment. `main` already incorporates the merged SQLite `TaskService`,
+progressive delegation, wake-event ledger, five-view read-only work/life dashboard,
+`pi-workbot` host reference, and 172 passing offline contract/SQL tests ([PR #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1),
+[PR #4](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/4),
+[PR #5](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/5)).
+Live Telegram bot-token wiring, `MR-Mem` pointer consumption, and follow-up UI/status
+refinements ([Draft PR #2](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/2),
+[Draft PR #3](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/3)) remain open.
 
 ## 9. MR Habitat: architecture should permit disposable experiments
 
@@ -478,13 +481,13 @@ The intended signal is narrower:
 
 ## Current integration evidence boundary (2026-11)
 
-The cross-project architecture is documented, but the implementation is intentionally
-not described as production-integrated. The three review points are:
-[Agent-WorkBench #1](https://github.com/Jasonatafricanow/Agent-WorkBench/pull/1)
-for business state and event contracts,
+The cross-project architecture is documented, but cross-repo production integration
+is intentionally not overstated. Key review points are:
+[Agent-WorkBench](https://github.com/Jasonatafricanow/Agent-WorkBench) `main`
+(merged modular SQLite backend and event contracts),
 [MR-Mem #22](https://github.com/Jasonatafricanow/MR-Mem/pull/22)
 for source/authorization bindings, and
 [Mind Runtime #67](https://github.com/Jasonatafricanow/Mind-Runtime/pull/67)
 for the frozen Soul/Body authority clarification. The existing Host is
-responsible for Session/Run and tool execution; it has not been claimed as a
-working production connection to all three.
+responsible for Session/Run and tool execution; live end-to-end wiring across all
+three repositories remains in progress.
